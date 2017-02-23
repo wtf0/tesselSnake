@@ -63,7 +63,8 @@ void osciTail::draw(){
     
     
     if(tail.size() > 0){
-        /*
+        
+        
         std::reverse(bottomPoints.begin(),bottomPoints.end());
         
         line.addVertices(topPoints);
@@ -78,7 +79,20 @@ void osciTail::draw(){
             path.curveTo(holder[l]);
             
         }
-        //tessellation = path.getTessellation();
+        /*
+        tessellation = path.getTessellation();
+        
+        int tesSize = tessellation.getNumVertices();
+        for(int i = 0; i < tesSize; i++){
+            
+            tessellation.addColor(ofColor(0,0,0));
+            if(i > tesSize * 0.33){
+                tessellation.addColor(ofColor(255,0,0));
+            }
+            
+        }
+        */
+        
         
         ofColor greenish;
         greenish.set(153, 255,182, 255);
@@ -91,7 +105,10 @@ void osciTail::draw(){
             
         }
         line.clear();
+        path.clear();
+        pathTwo.clear();
         
+        /*
         //ofColor greenish;
         greenish.set(153, 255,182, 255);
         path.setColor(greenish);
@@ -106,38 +123,6 @@ void osciTail::draw(){
         //pathTwo.draw();
         pathTwo.clear();
         */
-        
-        std::reverse(bottomPoints.begin(),bottomPoints.end());
-        std::reverse(topPoints.begin(),topPoints.end());
-
-        for(int i = 0; i < topPoints.size()-1; i++){
-            
-            ofColor colour;
-            tessellation.addVertex(topPoints[i]);
-            colour.set(255, 255, 255);//, tail[tail.size()-i].getOpacity());
-            tessellation.addColor(colour);
-            tessellation.addIndex(i);   //a
-            tessellation.addIndex(i+1);//b
-            tessellation.addIndex(i+3);//d
-            
-            tessellation.addIndex(i + 1);   //b
-            tessellation.addIndex(i+2);//c
-            tessellation.addIndex(i+3);//d
-            
-            tessellation.addVertex(bottomPoints[i]);
-            colour.set(255, 255, 255);//, tail[tail.size()-i].getOpacity());
-            tessellation.addColor(colour);
-            tessellation.addIndex(i+1);   //a
-            tessellation.addIndex(i+2);//b
-            tessellation.addIndex(i+4);//d
-            
-            tessellation.addIndex(i + 2);   //b
-            tessellation.addIndex(i+3);//c
-            tessellation.addIndex(i+4);//d
-            
-        }
-        
-        
         topPoints.clear();
         bottomPoints.clear();
         
@@ -200,9 +185,9 @@ void osciTail::draw(){
             tessellation.addIndex(j);
             colour.set(255, 255, 255, tail[j].getOpacity());
             tessellation.addColor(colour);
-             */
             ofSetColor(255,0,0);
             ofDrawRectangle(atNinety.x, atNinety.y, 5, 5);
+             */
             
             tmpAngle = -90 + angles[j];
             atNinety.x = current.x + width * (cos(tmpAngle*PI/180));
@@ -233,6 +218,7 @@ void osciTail::draw(){
             atNinety.x = current.x + width * (cos(tmpAngle*PI/180));
             atNinety.y = current.y + width * (sin(tmpAngle*PI/180));
             bottomPointsTwo.push_back(atNinety);
+            
             /*
             for(int i = 0; i < topPoints.size()-1; i++){
                 
@@ -253,7 +239,7 @@ void osciTail::draw(){
             */
             
             //ofDrawRectangle(atNinety.x, atNinety.y, 5, 5);
-            
+            /*
              ofPushMatrix();
                  ofTranslate(tail[j].getPosition().x, tail[j].getPosition().y);
             if(j == 0){
@@ -265,9 +251,56 @@ void osciTail::draw(){
                  ofSetColor(255, 0, 0, 50);
                  ofDrawRectangle(0, 0, 5, 30);
              ofPopMatrix();
+             */
+        }
+        if(topPoints.size() > 1){
+            for(int i = 0; i < topPoints.size(); i++){
+                tessellation.addVertex(topPoints[i]);
+                //tessellation.addColor(ofColor(255,0,0));
+                tessellation.addVertex(bottomPoints[i]);
+                //tessellation.addColor(ofColor(255,0,0));
+            }
+            for(int j = 0; j < tessellation.getNumVertices() - 3; j++){
+                
+                ofColor colour;
+                int arrayPos = ofMap(j, 0, tessellation.getNumVertices(), 0, tail.size());
+                colour.set(153, 255,182, tail[arrayPos].getOpacity());
+                tessellation.addColor(colour);
+                tessellation.addIndex(j);
+                tessellation.addIndex(j+1);
+                tessellation.addIndex(j+3);
+
+                tessellation.addIndex(j+1);
+                tessellation.addIndex(j+2);
+                tessellation.addIndex(j+3);
+            }
+            tessellation.drawFaces();
+            tessellation.clear();
+            
+            for(int i = 0; i < topPoints.size(); i++){
+                tessellation.addVertex(topPointsTwo[i]) ;               //tessellation.addColor(ofColor(255,0,0));
+                tessellation.addVertex(bottomPointsTwo[i]);
+                //tessellation.addColor(ofColor(255,0,0));
+            }
+            for(int j = 0; j < tessellation.getNumVertices() - 3; j++){
+                
+                ofColor colour;
+                int arrayPos = ofMap(j, 0, tessellation.getNumVertices(), 0, tail.size());
+                colour.set(234, 255,241, tail[arrayPos].getOpacity());
+                tessellation.addColor(colour);
+                
+                tessellation.addIndex(j);
+                tessellation.addIndex(j+1);
+                tessellation.addIndex(j+3);
+                
+                tessellation.addIndex(j+1);
+                tessellation.addIndex(j+2);
+                tessellation.addIndex(j+3);
+            }
+            tessellation.smoothNormals(30);
+            tessellation.drawFaces();
         }
     }
-    tessellation.drawWireframe();
     tessellation.clear();
 
 }
