@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "osciParticle.h"
 #include "osciTail.h"
 
 class ofApp : public ofBaseApp{
@@ -24,5 +23,5 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
         osciTail tailOne;
-    
+		
 };

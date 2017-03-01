@@ -10,9 +10,10 @@ osciTail::osciTail(){
 //------------------------------------------
 void osciTail::setup(){
     
-    numSteps = 10;
-    distThresh = 7;
+    numSteps = 30;
+    distThresh = 3;
     tessellation.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+    drawSetting = 0;
     
 }
 //------------------------------------------
@@ -44,6 +45,13 @@ void osciTail::addPoint(ofVec2f currentPos){
         tail.push_back(tmpPart);
     }
 }
+//------------------------------------------
+void osciTail::setDrawMode(int mode){
+    
+    drawSetting = mode;
+    
+}
+
 //------------------------------------------
 void osciTail::update(){
     vector <int> killThem;
@@ -79,21 +87,11 @@ void osciTail::draw(){
             path.curveTo(holder[l]);
             
         }
-        /*
-        tessellation = path.getTessellation();
         
-        int tesSize = tessellation.getNumVertices();
-        for(int i = 0; i < tesSize; i++){
-            
-            tessellation.addColor(ofColor(0,0,0));
-            if(i > tesSize * 0.33){
-                tessellation.addColor(ofColor(255,0,0));
-            }
-            
+        if(drawSetting == 1){
+            tessellation = path.getTessellation();
         }
-        */
-        
-        
+    
         ofColor greenish;
         greenish.set(153, 255,182, 255);
         path.setColor(greenish);
@@ -105,40 +103,38 @@ void osciTail::draw(){
             
         }
         line.clear();
+        
+        
+        if(drawSetting == 3){
+            //ofColor greenish;
+            greenish.set(153, 255,182, 255);
+            path.setColor(greenish);
+            path.setStrokeWidth(4);
+            path.draw();
+            path.clear();
+            
+            ofColor light;
+            light.set(234, 255,241, 255);
+            pathTwo.setColor(light);
+            pathTwo.setStrokeWidth(2);
+            pathTwo.draw();
+            pathTwo.clear();
+        }
+        
         path.clear();
         pathTwo.clear();
         
-        /*
-        //ofColor greenish;
-        greenish.set(153, 255,182, 255);
-        path.setColor(greenish);
-        path.setStrokeWidth(4);
-        //path.draw();
-        path.clear();
-        
-        ofColor light;
-        light.set(234, 255,241, 255);
-        pathTwo.setColor(light);
-        pathTwo.setStrokeWidth(2);
-        //pathTwo.draw();
-        pathTwo.clear();
-        */
         topPoints.clear();
         bottomPoints.clear();
         
         topPointsTwo.clear();
         bottomPointsTwo.clear();
         
+        topPointsThree.clear();
+        bottomPointsThree.clear();
+        
         angles.resize(tail.size());
         for(int j = 0; j < tail.size() -1; j++){
-            /*
-             ofSetColor(0,255,0, 127);
-             ofSetLineWidth(5);
-             ofDrawLine(tail[j].getPosition(), tail[j+1].getPosition());
-             ofSetColor(255, 255, 255, 200);
-             ofSetLineWidth(2);
-             ofDrawLine(tail[j].getPosition(), tail[j+1].getPosition());
-             */
             
             ofVec2f current;
             current.x = tail[j].getPosition().x;
@@ -176,33 +172,10 @@ void osciTail::draw(){
             atNinety.y = current.y + width * (sin(tmpAngle*PI/180));
             topPoints.push_back(atNinety);
           
-            /*
-            ofColor colour;
-            tessellation.addVertex(atNinety);
-            tessellation.addIndex(j);
-            tessellation.addIndex(j+1);
-            tessellation.addIndex(j+2);
-            tessellation.addIndex(j);
-            colour.set(255, 255, 255, tail[j].getOpacity());
-            tessellation.addColor(colour);
-            ofSetColor(255,0,0);
-            ofDrawRectangle(atNinety.x, atNinety.y, 5, 5);
-             */
-            
             tmpAngle = -90 + angles[j];
             atNinety.x = current.x + width * (cos(tmpAngle*PI/180));
             atNinety.y = current.y + width * (sin(tmpAngle*PI/180));
             bottomPoints.push_back(atNinety);
-            /*
-            tessellation.addVertex(atNinety);
-            tessellation.addIndex(j);
-            tessellation.addIndex(j+1);
-            tessellation.addIndex(j+2);
-            colour.set(255, 255, 255, tail[j].getOpacity());
-            tessellation.addColor(colour);
-            */
-
-
             
             width = (ofNoise(ofRandom(0, 2)))*2;
             
@@ -219,87 +192,105 @@ void osciTail::draw(){
             atNinety.y = current.y + width * (sin(tmpAngle*PI/180));
             bottomPointsTwo.push_back(atNinety);
             
-            /*
-            for(int i = 0; i < topPoints.size()-1; i++){
-                
-                tessellation.addVertex(topPoints[i]);
-                tessellation.addVertex(bottomPoints[i]);
-                tessellation.addVertex(topPoints[i+1]);
-                tessellation.addIndex(i);
-                tessellation.addIndex(i+1);
-                tessellation.addIndex(i+2);
-                tessellation.addVertex(bottomPoints[i+1]);
-                tessellation.addVertex(topPoints[i]);
-                tessellation.addVertex(bottomPoints[i]);
-                tessellation.addIndex(i);
-                tessellation.addIndex(i+1);
-                tessellation.addIndex(i+2);
-                
-            }
-            */
+            width = (ofNoise(ofRandom(0, 2)))*10;
             
-            //ofDrawRectangle(atNinety.x, atNinety.y, 5, 5);
-            /*
-             ofPushMatrix();
-                 ofTranslate(tail[j].getPosition().x, tail[j].getPosition().y);
-            if(j == 0){
-                ofDrawBitmapString("this is patient 0", 5, 5);
+            tmpAngle = 90 + angles[j];
+            atNinety.x = current.x + width * (cos(tmpAngle*PI/180));
+            atNinety.y = current.y + width * (sin(tmpAngle*PI/180));
+            topPointsThree.push_back(atNinety);
+            if(drawSetting == 2){
+                ofDrawRectangle(atNinety.x, atNinety.y, 5, 5);
             }
-                 ofRotate(angles[j], 0, 0, 1);
-                 ofSetColor(255,255,255);
-                 ofDrawLine(0, 0, -10, 0);
-                 ofSetColor(255, 0, 0, 50);
-                 ofDrawRectangle(0, 0, 5, 30);
-             ofPopMatrix();
-             */
+            tmpAngle = -90 + angles[j];
+            atNinety.x = current.x + width * (cos(tmpAngle*PI/180));
+            atNinety.y = current.y + width * (sin(tmpAngle*PI/180));
+            bottomPointsThree.push_back(atNinety);
+
+            if(drawSetting == 2){
+                ofSetColor(255,255,255);
+                ofDrawRectangle(atNinety.x, atNinety.y, 5, 5);
+                ofPushMatrix();
+                    ofTranslate(tail[j].getPosition().x, tail[j].getPosition().y);
+                    if(j == 0){
+                    ofDrawBitmapString("this is patient 0", 5, 5);
+                    }
+                    ofRotate(angles[j], 0, 0, 1);
+                    ofSetColor(255, 0, 0, 190);
+                    ofDrawLine(0, 0, -10, 0);
+                    //ofDrawRectangle(0, 0, 5, 30);
+                ofPopMatrix();
+            }
         }
         if(topPoints.size() > 1){
-            for(int i = 0; i < topPoints.size(); i++){
-                tessellation.addVertex(topPoints[i]);
-                //tessellation.addColor(ofColor(255,0,0));
-                tessellation.addVertex(bottomPoints[i]);
-                //tessellation.addColor(ofColor(255,0,0));
-            }
-            for(int j = 0; j < tessellation.getNumVertices() - 3; j++){
+            if(drawSetting == 0){
+                for(int i = 0; i < topPoints.size(); i++){
+                    tessellation.addVertex(topPointsThree[i]);
+                    tessellation.addVertex(bottomPointsThree[i]);
+                }
+                for(int j = 0; j < tessellation.getNumVertices() - 3; j++){
+                    
+                    ofColor colour;
+                    int arrayPos = ofMap(j, 0, tessellation.getNumVertices(), 0, tail.size());
+                    colour.set(153, 255,182, tail[arrayPos].getOpacity());
+                    tessellation.addColor(colour);
+                    tessellation.addIndex(j);
+                    tessellation.addIndex(j+1);
+                    tessellation.addIndex(j+3);
+                    
+                    tessellation.addIndex(j+1);
+                    tessellation.addIndex(j+2);
+                    tessellation.addIndex(j+3);
+                }
+                    tessellation.drawWireframe();
+                    tessellation.clear();
                 
-                ofColor colour;
-                int arrayPos = ofMap(j, 0, tessellation.getNumVertices(), 0, tail.size());
-                colour.set(153, 255,182, tail[arrayPos].getOpacity());
-                tessellation.addColor(colour);
-                tessellation.addIndex(j);
-                tessellation.addIndex(j+1);
-                tessellation.addIndex(j+3);
+                for(int i = 0; i < topPoints.size(); i++){
+                    tessellation.addVertex(topPoints[i]);
+                    tessellation.addVertex(bottomPoints[i]);
+                }
+                for(int j = 0; j < tessellation.getNumVertices() - 3; j++){
+                    
+                    ofColor colour;
+                    int arrayPos = ofMap(j, 0, tessellation.getNumVertices(), 0, tail.size());
+                    colour.set(0, 255,0, tail[arrayPos].getOpacity());
+                    tessellation.addColor(colour);
+                    tessellation.addIndex(j);
+                    tessellation.addIndex(j+1);
+                    tessellation.addIndex(j+3);
 
-                tessellation.addIndex(j+1);
-                tessellation.addIndex(j+2);
-                tessellation.addIndex(j+3);
-            }
-            tessellation.drawFaces();
-            tessellation.clear();
-            
-            for(int i = 0; i < topPoints.size(); i++){
-                tessellation.addVertex(topPointsTwo[i]) ;               //tessellation.addColor(ofColor(255,0,0));
-                tessellation.addVertex(bottomPointsTwo[i]);
-                //tessellation.addColor(ofColor(255,0,0));
-            }
-            for(int j = 0; j < tessellation.getNumVertices() - 3; j++){
+                    tessellation.addIndex(j+1);
+                    tessellation.addIndex(j+2);
+                    tessellation.addIndex(j+3);
+                }
+                tessellation.drawWireframe();
+                tessellation.clear();
                 
-                ofColor colour;
-                int arrayPos = ofMap(j, 0, tessellation.getNumVertices(), 0, tail.size());
-                colour.set(234, 255,241, tail[arrayPos].getOpacity());
-                tessellation.addColor(colour);
-                
-                tessellation.addIndex(j);
-                tessellation.addIndex(j+1);
-                tessellation.addIndex(j+3);
-                
-                tessellation.addIndex(j+1);
-                tessellation.addIndex(j+2);
-                tessellation.addIndex(j+3);
+                for(int i = 0; i < topPoints.size(); i++){
+                    tessellation.addVertex(topPointsTwo[i]) ;
+                    tessellation.addVertex(bottomPointsTwo[i]);
+                }
+                for(int j = 0; j < tessellation.getNumVertices() - 3; j++){
+                    
+                    ofColor colour;
+                    int arrayPos = ofMap(j, 0, tessellation.getNumVertices(), 0, tail.size());
+                    colour.set(234, 255,241, tail[arrayPos].getOpacity());
+                    tessellation.addColor(colour);
+                    
+                    tessellation.addIndex(j);
+                    tessellation.addIndex(j+1);
+                    tessellation.addIndex(j+3);
+                    
+                    tessellation.addIndex(j+1);
+                    tessellation.addIndex(j+2);
+                    tessellation.addIndex(j+3);
+                }
+                tessellation.drawWireframe();
             }
-            tessellation.smoothNormals(30);
-            tessellation.drawFaces();
         }
+        
+    }
+    if(drawSetting == 1){
+        tessellation.drawWireframe();
     }
     tessellation.clear();
 

@@ -3,10 +3,6 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    ofSetRectMode(OF_RECTMODE_CENTER);
-    
-    ofBackground(17,50, 48);
-    
     tailOne.setup();
 
 
@@ -15,18 +11,6 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     
-    
-    float left = 10;
-    float down = 10;
-    
-    left ++;
-    
-    ofVec2f tmp;
-    tmp.x = left;
-    tmp.y = down;
-   // tailOne.addPoint(tmp);
-
-
     tailOne.update();
 
 }
@@ -34,31 +18,54 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
+    ofBackgroundGradient(ofColor(60,60,60), ofColor(10,10,10));
+
     tailOne.draw();
     
     ofSetColor(255,255,255);
     ofDrawBitmapString(ofToString(ofGetFrameRate()), 10, 10);
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    
 
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
+    
+    if(key == '1'){
+        tailOne.setDrawMode(1);
+    }
+    
+    if(key == '2'){
+        tailOne.setDrawMode(2);
+    }
+    if(key == '3'){
+        tailOne.setDrawMode(3);
+    }
+    if(key == '0'){
+        tailOne.setDrawMode(0);
+    }
+    if(key == 'c'){
+        
+        ofToggleFullscreen();
+        
+    }
 
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
+    
     ofVec2f mouse;
     mouse.x = x;
     mouse.y = y;
     
     tailOne.addPoint(mouse);
-    
+
 }
 
 //--------------------------------------------------------------

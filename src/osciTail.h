@@ -13,6 +13,8 @@ class osciTail{
     void addPoint(ofVec2f currentPos);
     void update();
     void draw();
+    
+    void setDrawMode(int mode);
 
     
     int stepSize;
@@ -23,11 +25,15 @@ class osciTail{
     vector <ofPoint> bottomPoints;
     vector <ofPoint> topPointsTwo;
     vector <ofPoint> bottomPointsTwo;
+    vector <ofPoint> topPointsThree;
+    vector <ofPoint> bottomPointsThree;
 
     
     ofPolyline line;
     ofPath path;
     ofPath pathTwo;
+    
+    int drawSetting;
     
     int numSteps;
     int distThresh;
